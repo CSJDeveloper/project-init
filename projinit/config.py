@@ -252,7 +252,7 @@ class Config:
 
             # Customizable dictionary of global parameters
             # Log id is the folder name of all logging information
-            # include :
+            # include:
             #   - checkpoint_path,
             #   - result_path,
             #   -logging_path,
@@ -555,7 +555,7 @@ class Config:
         return unique_id, group_name
 
     @staticmethod
-    def set_records() -> None:
+    def set_records(status: str = "Incomplete") -> None:
         """
         Create the basic save name for the current run-time configuration.
         This function is to create the unique name and will save the running
@@ -577,17 +577,28 @@ class Config:
                 "project_path": [Config.params["project_path"]],
                 "exe_id": [Config.params["exe_id"]],
                 "config_path": [Config.params["config_path"]],
+                "status": status,
             }
         )
+        # Define matching columns (first 10 keys)
+        id_columns = record_df.columns.tolist()[:10]
 
-        # Check if the CSV file exists
         if not os.path.exists(record_path):
-            # Create a new CSV file with headers
-            record_df.to_csv(record_path)
+            # Create new file with headers
+            record_df.to_csv(record_path, index=False)
         else:
-            # Read existing CSV data
+            # Read existing data
             existing_df = pd.read_csv(record_path)
-            # Check if any existing row matches ALL columns of the new record
-            is_duplicate = existing_df.eq(record_df.iloc[0]).all(axis=1).any()
-            if not is_duplicate:
-                record_df.to_csv(record_path, mode="a", header=False)
+
+            # Check for matching IDs
+            mask = (existing_df[id_columns] == record_df.iloc[0][id_columns]).all(
+                axis=1
+            )
+
+            if mask.any():
+                # Update status for existing record(s)
+                existing_df.loc[mask, "status"] = status
+                existing_df.to_csv(record_path, index=False)
+            else:
+                # Append new record
+                record_df.to_csv(record_path, mode="a", header=False, index=False)
