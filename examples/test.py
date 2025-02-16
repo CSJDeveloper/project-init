@@ -8,7 +8,8 @@ from projinit import platform_init
 if __name__ == "__main__":
     # Initialize the project
     test_config = config.Config()
-    # Print the configuration
+    # Set the platforms
     platform_init.InitializePlatforms().login_accounts()
     # Create the project information
-    platform_init.ProjectInfo().create_wandb(entity="ICML25-plan")
+    proj_info = platform_init.ProjectInfo()
+    wandb_run = proj_info.create_wandb(entity="ICML25-plan")

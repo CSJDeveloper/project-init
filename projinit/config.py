@@ -91,6 +91,15 @@ def query_values(content: dict, query: str) -> list:
     ]
 
 
+def format_str(ori_string: str):
+    """Make the string to be a valid name."""
+    # Replace every special character with '-'
+    special_chars = ["/", "\\", "#", "?", "%", ":"]
+    for char in special_chars:
+        ori_string = ori_string.replace(char, "-")
+    return ori_string
+
+
 class Loader(yaml.SafeLoader):
     """YAML Loader with `!include` constructor."""
 
@@ -285,19 +294,23 @@ class Config:
 
             # Get the fix project name
             # Get the name of the data and the model
-            Config.params["model_name"] = Config.model.model_name
-            Config.params["data_name"] = Config.data.data_name
+            model_name = format_str(Config.model.model_name)
+            data_name = format_str(Config.data.data_name)
+            Config.params["model_name"] = model_name
+            Config.params["data_name"] = data_name
             exe_id, fix_name = Config.create_sub_folders()
             fix_project_name = f"{base_project_name}--{fix_name}"
+            fix_project_name = format_str(fix_project_name)
             Config.params["fix_project_name"] = fix_project_name
 
             # Get the user project name
             # The user' config setting to enhance the project name
             # by adding these information to the project name
             values = query_values(config, user_keys)
+            values = [format_str(str(value)) for value in values]
             user_keys = user_keys.split(";")
             Config.params["user_project_keys"] = dict(zip(user_keys, values))
-            user_project_name = "--".join(map(str, values))
+            user_project_name = "--".join(values)
             Config.params["user_project_name"] = user_project_name
 
             project_name = fix_project_name
