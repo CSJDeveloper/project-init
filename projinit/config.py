@@ -590,11 +590,8 @@ class Config:
             # Read existing data
             existing_df = pd.read_csv(record_path)
 
-            # Check for matching IDs
-            mask = (existing_df[id_columns] == record_df.iloc[0][id_columns]).all(
-                axis=1
-            )
-
+            # Check for matching ID
+            mask = existing_df["exe_id"] == record_df.iloc[0]["exe_id"]
             if mask.any():
                 # Update status for existing record(s)
                 timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
