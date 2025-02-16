@@ -1,0 +1,46 @@
+
+# To test the code of the project initialization.
+
+
+data:
+  data_name: MATH
+  data_path: data
+  
+environment:
+  dotenv_path: .env
+
+
+model:
+  model_name: TestModel
+
+
+
+
+train:
+  epoch: 10
+
+
+
+logging:
+
+  checkpoint_path: checkpoints
+  result_path: results
+  logging_path: loggings
+  visualization_path: visualizations
+
+
+evaluation:
+    n_step: 10
+
+  
+
+
+
+   
+
+
+
+
+
+
+
