@@ -13,3 +13,5 @@ if __name__ == "__main__":
     # Create the project information
     proj_info = platform_init.ProjectInfo()
     wandb_run = proj_info.create_wandb(entity="ICML25-plan")
+
+    config.Config.set_records(status="Completed")

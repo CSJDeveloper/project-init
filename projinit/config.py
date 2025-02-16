@@ -597,6 +597,8 @@ class Config:
 
             if mask.any():
                 # Update status for existing record(s)
+                timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+                status = f"{status}@{timestamp}"
                 existing_df.loc[mask, "status"] = status
                 existing_df.to_csv(record_path, index=False)
             else:
