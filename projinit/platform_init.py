@@ -8,6 +8,7 @@ import logging
 import wandb
 from dotenv import load_dotenv
 from huggingface_hub import login
+from accelerate import Accelerator
 
 from projinit.config import Config
 
@@ -64,14 +65,18 @@ class ProjectInfo:
         project = self.base_config["project_name"]
         if entity != base_name:
             project = f"{base_name}---{project}"
-        wandb_run = wandb.init(
-            entity=entity,
-            project=project,
-            name=self.base_config["exe_id"],
-        )
-
-        # Added the record file to the wandb
-        artifact = wandb.Artifact("experiment_info", type="info")
-        artifact.add_file(self.base_config["record_path"])
-        wandb_run.log_artifact(artifact)
+        if Accelerator().is_local_main_process:
+            wandb_run = wandb.init(
+                entity=entity,
+                project=project,
+                name=self.base_config["exe_id"],
+            )
+            # Added the record file to the wandb
+            artifact = wandb.Artifact("experiment_info", type="info")
+            artifact.add_file(self.base_config["record_path"])
+            wandb_run.log_artifact(artifact)
+        else:
+            os.environ["WANDB_ENTITY"] = entity
+            os.environ["WANDB_PROJECT"] = project
+            os.environ["WANDB_NAME"] = self.base_config["exe_id"]
         return wandb_run

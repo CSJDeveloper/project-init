@@ -5,7 +5,7 @@ Reading runtime parameters from a configuration file.
 This config will load the config file and then create folders for the project.
 We assume that we are in the root folder of the project:
 
-- base_path 
+- base_path
     - data (data_path)
     - {ix_project_name}--{user_project_name} (project_name)
         - {execute_id}  (log_path)
@@ -344,7 +344,7 @@ class Config:
                     default_path=os.path.join(
                         base_path, "data", Config.params["data_name"]
                     ),
-                    is_create_default=False,
+                    is_create_default=True,
                 )
             )
             # Set the logging path
