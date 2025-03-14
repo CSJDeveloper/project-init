@@ -41,9 +41,10 @@ class InitializePlatforms:
         Initialize the accounts for the project.
         """
         # Login to Hugging Face
-        login(token=os.environ.get("HUGGINGFACE_TOKEN"))
-        # Login to Wandb
-        wandb.login(key=os.environ.get("WANDB_KEY"))
+        if Accelerator().is_local_main_process:
+            login(token=os.environ.get("HUGGINGFACE_TOKEN"))
+            # Login to Wandb
+            wandb.login(key=os.environ.get("WANDB_KEY"))
 
 
 class ProjectInfo:
