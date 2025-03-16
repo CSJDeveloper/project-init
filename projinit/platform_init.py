@@ -80,4 +80,11 @@ class ProjectInfo:
             os.environ["WANDB_ENTITY"] = entity
             os.environ["WANDB_PROJECT"] = project
             os.environ["WANDB_NAME"] = self.base_config["exe_id"]
+            wandb_run = None
+
         return wandb_run
+
+    def close_wandb(self, wandb_run):
+        """Close the wandb in the main process."""
+        if Accelerator().is_local_main_process:
+            wandb_run.finish()
